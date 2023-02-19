@@ -1,22 +1,56 @@
 import express from 'express'
-import jwt from 'jsonwebtoken'
+import mongoose from "mongoose";
+import multer  from "multer"
+import {registerValidation} from "./validations/auth.js"
+import checkAuth from "./utils/checkAuth.js";
+import {login, meInfo, register} from './controllers/UserController.js'
+import {createPost, getAll, getOne, deletePost, updatePost,getLastTags} from './controllers/PostController.js'
+import {loginValidation} from "./validations/login.js";
+import {postValidation} from "./validations/post.js";
+import handleValidationErrors from "./utils/handleValidationErrors.js";
+import cors from 'cors'
+
+mongoose.set('strictQuery', false)
+mongoose.connect("mongodb+srv://lghosta:sasha20092003@cluster0.w3qzuwk.mongodb.net/?retryWrites=true&w=majority")
+    .then(()=>console.log("DB OK"))
+    .catch((err) => console.log(err))
+
 const app = express();
 const port = 9999
+
+const storage = multer.diskStorage({
+    destination : (_, __, cb) => {
+        cb(null, "uploads")
+    },
+    filename : (_, filename, cb) => {
+        cb(null, filename.originalname)
+    }
+});
+
+const upload = multer({storage})
+
 app.use(express.json())
-app.get("/", (req, res)=>{
-    res.send("Hello World")
-})
-app.post("/auth/login", (req,res)=>{
-    console.log(req.body)
-    const token = jwt.sign({
-        email:req.body.email,
-        password:req.body.password
-    }, "secret123")
+app.use(cors())
+app.use('/uploads', express.static('uploads'))
+
+app.post("/upload", checkAuth,  upload.single("image") , (req, res) => {
     res.json({
-        success:true,
-        token
+        url : `uploads/${req.file.originalname}`
     })
 })
+// reg & log
+app.post("/auth/register",  registerValidation, handleValidationErrors, register)
+app.post('/auth/login', loginValidation, handleValidationErrors, login)
+app.get("/me", checkAuth, meInfo)
+// posts
+app.get("/posts",  getAll )
+app.get("/posts/:id", getOne)
+app.post('/posts',checkAuth, postValidation, createPost)
+app.delete("/posts/:id", checkAuth,  deletePost )
+app.patch("/posts/:id",checkAuth, updatePost )
+//tags
+app.get('/tags', getLastTags)
+
 app.listen(port, () => {
     console.log(`Example app listening on port ${port}`)
 })
