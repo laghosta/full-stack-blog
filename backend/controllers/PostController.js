@@ -1,5 +1,5 @@
 import Post from "../models/Post.js";
-
+import User from "../models/User.js";
 export const createPost = async (req, res) => {
     try {
         const doc = new Post({
@@ -8,6 +8,7 @@ export const createPost = async (req, res) => {
             text: req.body.text,
             tags: req.body.tags,
             author: req.userId,
+            comments: req.comments
         })
         const post = await doc.save()
         console.log(req.body)
@@ -42,7 +43,7 @@ export const getOne = async (req, res) => {
         {
             returnDocument: "after"
         },
-        ).populate("author").then(doc=>res.json(doc))
+        ).populate("author").populate('comments.author').then(doc=>res.json(doc))
     }
     catch (err) {
         console.log(err)
@@ -78,6 +79,7 @@ export const updatePost = async (req, res)=>{
             text : req.body.text,
             imageUrl : req.body.imageUrl,
             author : req.body.userId,
+            comments : req.body.comments,
             tags : req.body.tags
             }
         )
@@ -103,4 +105,36 @@ export const getLastTags = async (req, res) =>{
             message : "Не удалось загрузить тэги"
         })
     }
+}
+export const addComment = async (req, res) =>{
+    try{
+        const comment = {
+            text: req.body.text,
+            author: req.userId,
+        }
+        // const post = Post.findOne({
+        //     _id : req.params.id
+        // }).then(p => {
+        //     p.comments.push(comment)
+        //     res.json(p)
+        // })
+        await Post.findOneAndUpdate(
+            {
+                _id: req.params.id,
+            },
+            {
+                "$push": { "comments": comment }
+            },
+            {
+                returnDocument: "after"
+            }
+        ).populate({
+            path:'author',
+            model:'User'
+        }).then((doc)=>res.json(doc))
+    }
+    catch(err) {
+        console.log(err)
+    }
+
 }

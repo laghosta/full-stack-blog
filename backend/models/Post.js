@@ -1,5 +1,4 @@
 import mongoose from "mongoose";
-
 const PostScheme = new mongoose.Schema({
     title: {
         type: String,
@@ -23,10 +22,18 @@ const PostScheme = new mongoose.Schema({
         ref:'User',
         required:true,
     },
+
     imageUrl:{
         type : String,
         required : false
     },
+    comments : [{
+        author: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'User',
+        },
+        text : String,
+    }] ,
 },
-    {timestamps:true})
+{timestamps:true})
 export default mongoose.model("Post", PostScheme)

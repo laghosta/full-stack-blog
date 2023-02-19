@@ -4,7 +4,15 @@ import multer  from "multer"
 import {registerValidation} from "./validations/auth.js"
 import checkAuth from "./utils/checkAuth.js";
 import {login, meInfo, register} from './controllers/UserController.js'
-import {createPost, getAll, getOne, deletePost, updatePost,getLastTags} from './controllers/PostController.js'
+import {
+    createPost,
+    getAll,
+    getOne,
+    deletePost,
+    updatePost,
+    getLastTags,
+    addComment
+} from './controllers/PostController.js'
 import {loginValidation} from "./validations/login.js";
 import {postValidation} from "./validations/post.js";
 import handleValidationErrors from "./utils/handleValidationErrors.js";
@@ -50,7 +58,8 @@ app.delete("/posts/:id", checkAuth,  deletePost )
 app.patch("/posts/:id",checkAuth, updatePost )
 //tags
 app.get('/tags', getLastTags)
-
+//comments
+app.post('/posts/addComment/:id/', checkAuth, addComment)
 app.listen(port, () => {
     console.log(`Example app listening on port ${port}`)
 })

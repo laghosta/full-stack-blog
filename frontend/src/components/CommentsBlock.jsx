@@ -20,7 +20,9 @@ export const CommentsBlock = ({ items, children, isLoading = true }) => {
                 {isLoading ? (
                   <Skeleton variant="circular" width={40} height={40} />
                 ) : (
-                  <Avatar alt={obj.user.fullName} src={obj.user.avatarUrl} />
+                    obj.author.avatar ?
+                        <Avatar alt={obj.author.userName} src={obj.author.avatar} />
+                    : <Avatar alt={obj.author.userName} src={"https://mui.com/static/images/avatar/5.jpg"} />
                 )}
               </ListItemAvatar>
               {isLoading ? (
@@ -30,7 +32,7 @@ export const CommentsBlock = ({ items, children, isLoading = true }) => {
                 </div>
               ) : (
                 <ListItemText
-                  primary={obj.user.fullName}
+                  primary={obj.author.userName}
                   secondary={obj.text}
                 />
               )}
@@ -41,5 +43,5 @@ export const CommentsBlock = ({ items, children, isLoading = true }) => {
       </List>
       {children}
     </SideBlock>
-  );
+  )
 };

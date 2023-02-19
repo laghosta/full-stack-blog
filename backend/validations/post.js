@@ -4,5 +4,7 @@ export const postValidation = [
     body("text", "Обязательно ввеедите текст статьи").isLength({min:10}).isString(),
     body("tags", "Неверный формат тэгов").optional(),
     body("imageUrl", "Неверная ссылка на изображение").optional().isURL(),
-    body("userId", "Что-то пошло не так").isString()
+    body("userId", "Что-то пошло не так").isString(),
+    body("comments", "Что-то пошло не так").optional()
+
 ]
