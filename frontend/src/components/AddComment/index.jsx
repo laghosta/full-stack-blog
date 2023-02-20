@@ -10,7 +10,7 @@ import axios from "../../axios";
 import {useDispatch} from "react-redux";
 import {fetchAddComment} from "../../Redux/PostSlice";
 
-export const Index = ({onAddComment, id}) => {
+export const Index = ({author,onAddComment, id}) => {
   const [comment, setComment] = React.useState("")
   const onClickSend = async() => {
       await axios.post(`/posts/addComment/${id}`, {text:comment})
@@ -22,7 +22,7 @@ export const Index = ({onAddComment, id}) => {
       <div className={styles.root}>
         <Avatar
           classes={{ root: styles.avatar }}
-          src="https://mui.com/static/images/avatar/5.jpg"
+          src={`http://localhost:9999/${author.avatarUrl}`}
         />
         <div className={styles.form}>
           <TextField value={comment} onChange={(e) => setComment(e.target.value)}
