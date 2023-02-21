@@ -4,6 +4,8 @@ import multer  from "multer"
 import {registerValidation} from "./validations/auth.js"
 import checkAuth from "./utils/checkAuth.js";
 import {login, meInfo, register} from './controllers/UserController.js'
+import dotenv from 'dotenv';
+dotenv.config()
 import {
     createPost,
     getAll,
@@ -19,7 +21,7 @@ import handleValidationErrors from "./utils/handleValidationErrors.js";
 import cors from 'cors'
 
 mongoose.set('strictQuery', false)
-mongoose.connect("mongodb+srv://lghosta:sasha20092003@cluster0.w3qzuwk.mongodb.net/?retryWrites=true&w=majority")
+mongoose.connect(`mongodb+srv://lghosta:${process.env.DB_PASS}@cluster0.w3qzuwk.mongodb.net/?retryWrites=true&w=majority`)
     .then(()=>console.log("DB OK"))
     .catch((err) => console.log(err))
 
